@@ -3,6 +3,7 @@ import discord
 import requests
 import json
 import my_token
+from tabulate import tabulate
 
 """ to get json file to map SYMBOL to company NAME """
 file = open('company.json')
@@ -31,7 +32,10 @@ class MyClient(discord.Client):
         if msg.startswith('$'):
             req = (str(msg[1:])).upper()
             cdata = await get_data(req)
-            await message.channel.send(f"{req}:\n \tLTP : {cdata['closingPrice']}\t\t\t\t Difference : {cdata['difference']} \n Traded Share : {cdata['tradedShares']}\t TAmount : {cdata['amount']}")
+            print(cdata['closingPrice'])
+            table = [['Name','LTP','Difference'],[f'{req}',f"{cdata['closingPrice']}",f"{cdata['difference']}"]]
+            print(table)
+            await message.channel.send(tabulate(table,headers="firstrow",tablefmt="orgtbl"))
 
 client = MyClient()
 client.run(my_token.token)
